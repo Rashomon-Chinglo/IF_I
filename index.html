@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人生IF线生成器 | 另一条世界线的你</title>
+    <meta name="description" content="探索平行宇宙中的另一个你，生成属于你的IF线人生故事">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 星空背景 -->
+        <div class="stars-bg" id="stars"></div>
+        
+        <!-- 欢迎页 -->
+        <section class="page welcome-page active" id="welcomePage">
+            <div class="content-wrapper">
+                <div class="logo-container">
+                    <div class="universe-icon">
+                        <div class="orbit orbit-1"></div>
+                        <div class="orbit orbit-2"></div>
+                        <div class="planet"></div>
+                    </div>
+                </div>
+                <h1 class="main-title">
+                    <span class="title-line">人生</span>
+                    <span class="title-if">IF</span>
+                    <span class="title-line">线</span>
+                </h1>
+                <p class="subtitle">探索平行宇宙中的另一个你</p>
+                <p class="description">
+                    如果人生走了另一条路，会是什么样子？<br>
+                    输入你的人生信息，AI 将为你生成一条<br>
+                    <strong>截然不同</strong>的世界线故事
+                </p>
+                <button class="btn-primary" id="startBtn">
+                    <span>开始探索</span>
+                    <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+                <button class="btn-secondary" id="settingsBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+                    </svg>
+                    <span>API 设置</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- 信息收集页 -->
+        <section class="page form-page" id="formPage">
+            <div class="content-wrapper">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                    <div class="step-indicators">
+                        <span class="step-dot active" data-step="1">1</span>
+                        <span class="step-dot" data-step="2">2</span>
+                        <span class="step-dot" data-step="3">3</span>
+                        <span class="step-dot" data-step="4">4</span>
+                    </div>
+                </div>
+
+                <form id="lifeForm">
+                    <!-- Step 1: 基本信息 -->
+                    <div class="form-step active" data-step="1">
+                        <h2 class="step-title">基本信息</h2>
+                        <p class="step-desc">先让我们了解一下你</p>
+                        
+                        <div class="form-group">
+                            <label for="nickname">你的昵称</label>
+                            <input type="text" id="nickname" name="nickname" placeholder="怎么称呼你？" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="age">年龄</label>
+                            <input type="number" id="age" name="age" placeholder="你的年龄" min="18" max="100" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>性别</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="gender" value="male" required>
+                                    <span class="radio-label">男</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="gender" value="female">
+                                    <span class="radio-label">女</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="gender" value="other">
+                                    <span class="radio-label">其他</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="city">所在城市</label>
+                            <input type="text" id="city" name="city" placeholder="你生活的城市" required>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: 感情状况 -->
+                    <div class="form-step" data-step="2">
+                        <h2 class="step-title">感情状况</h2>
+                        <p class="step-desc">在这条世界线上，你的感情生活如何？</p>
+                        
+                        <div class="form-group">
+                            <label>感情状态</label>
+                            <div class="select-cards">
+                                <label class="select-card">
+                                    <input type="radio" name="relationship" value="single" required>
+                                    <div class="card-content">
+                                        <span class="card-emoji">🦋</span>
+                                        <span class="card-text">单身自由</span>
+                                    </div>
+                                </label>
+                                <label class="select-card">
+                                    <input type="radio" name="relationship" value="dating">
+                                    <div class="card-content">
+                                        <span class="card-emoji">💕</span>
+                                        <span class="card-text">恋爱中</span>
+                                    </div>
+                                </label>
+                                <label class="select-card">
+                                    <input type="radio" name="relationship" value="married">
+                                    <div class="card-content">
+                                        <span class="card-emoji">💍</span>
+                                        <span class="card-text">已婚</span>
+                                    </div>
+                                </label>
+                                <label class="select-card">
+                                    <input type="radio" name="relationship" value="complicated">
+                                    <div class="card-content">
+                                        <span class="card-emoji">🌀</span>
+                                        <span class="card-text">一言难尽</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>有孩子吗？</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="hasKids" value="yes">
+                                    <span class="radio-label">有</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="hasKids" value="no" checked>
+                                    <span class="radio-label">没有</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: 职业生活 -->
+                    <div class="form-step" data-step="3">
+                        <h2 class="step-title">职业生活</h2>
+                        <p class="step-desc">工作与生活的日常</p>
+                        
+                        <div class="form-group">
+                            <label for="occupation">职业/身份</label>
+                            <input type="text" id="occupation" name="occupation" placeholder="你是做什么的？" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>工作稳定性</label>
+                            <div class="select-cards">
+                                <label class="select-card">
+                                    <input type="radio" name="jobStability" value="stable" required>
+                                    <div class="card-content">
+                                        <span class="card-emoji">🏛️</span>
+                                        <span class="card-text">铁饭碗/大厂</span>
+                                    </div>
+                                </label>
+                                <label class="select-card">
+                                    <input type="radio" name="jobStability" value="moderate">
+                                    <div class="card-content">
+                                        <span class="card-emoji">🏢</span>
+                                        <span class="card-text">普通稳定</span>
+                                    </div>
+                                </label>
+                                <label class="select-card">
+                                    <input type="radio" name="jobStability" value="freelance">
+                                    <div class="card-content">
+                                        <span class="card-emoji">🎨</span>
+                                        <span class="card-text">自由职业</span>
+                                    </div>
+                                </label>
+                                <label class="select-card">
+                                    <input type="radio" name="jobStability" value="unstable">
+                                    <div class="card-content">
+                                        <span class="card-emoji">🎢</span>
+                                        <span class="card-text">动荡不定</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>住房情况</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="housing" value="owned" required>
+                                    <span class="radio-label">有房</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="housing" value="renting">
+                                    <span class="radio-label">租房</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="housing" value="living_with_parents">
+                                    <span class="radio-label">和父母住</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: 生活状态 -->
+                    <div class="form-step" data-step="4">
+                        <h2 class="step-title">生活状态</h2>
+                        <p class="step-desc">最后再了解一点你的日常</p>
+                        
+                        <div class="form-group">
+                            <label>生活节奏</label>
+                            <div class="select-cards">
+                                <label class="select-card">
+                                    <input type="radio" name="lifestyle" value="regular" required>
+                                    <div class="card-content">
+                                        <span class="card-emoji">🌅</span>
+                                        <span class="card-text">规律养生</span>
+                                    </div>
+                                </label>
+                                <label class="select-card">
+                                    <input type="radio" name="lifestyle" value="balanced">
+                                    <div class="card-content">
+                                        <span class="card-emoji">⚖️</span>
+                                        <span class="card-text">比较平衡</span>
+                                    </div>
+                                </label>
+                                <label class="select-card">
+                                    <input type="radio" name="lifestyle" value="chaotic">
+                                    <div class="card-content">
+                                        <span class="card-emoji">🌙</span>
+                                        <span class="card-text">熬夜随性</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lifeDesc">用一句话描述你当前的生活</label>
+                            <textarea id="lifeDesc" name="lifeDesc" rows="3" placeholder="例如：每天朝九晚五，周末宅家打游戏..." required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dream">你曾经有过但没实现的梦想是？</label>
+                            <textarea id="dream" name="dream" rows="2" placeholder="例如：想当个摇滚歌手、环游世界..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-nav">
+                        <button type="button" class="btn-back" id="prevBtn" disabled>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 12H5M12 19l-7-7 7-7"/>
+                            </svg>
+                            上一步
+                        </button>
+                        <button type="button" class="btn-primary" id="nextBtn">
+                            下一步
+                            <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                        <button type="submit" class="btn-primary btn-generate" id="generateBtn" style="display:none;">
+                            <span class="btn-text">生成 IF 线</span>
+                            <span class="btn-icon">✨</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- 生成中页面 -->
+        <section class="page loading-page" id="loadingPage">
+            <div class="content-wrapper">
+                <div class="portal-animation">
+                    <div class="portal-ring ring-1"></div>
+                    <div class="portal-ring ring-2"></div>
+                    <div class="portal-ring ring-3"></div>
+                    <div class="portal-center"></div>
+                </div>
+                <h2 class="loading-title">正在穿越时空...</h2>
+                <p class="loading-text" id="loadingText">寻找平行宇宙中的另一个你</p>
+                <div class="loading-dots">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 结果展示页 -->
+        <section class="page result-page" id="resultPage">
+            <div class="content-wrapper">
+                <div class="result-header">
+                    <span class="result-badge">🌌 另一条世界线</span>
+                    <h2 class="result-title">在那个宇宙里的 <span id="resultName">你</span></h2>
+                </div>
+                <div class="story-container">
+                    <div class="story-content" id="storyContent">
+                        <!-- 故事内容将在此显示 -->
+                    </div>
+                </div>
+                <div class="result-actions">
+                    <button class="btn-secondary" id="regenerateBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 4v6h6M23 20v-6h-6"/>
+                            <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+                        </svg>
+                        再来一次
+                    </button>
+                    <button class="btn-primary" id="shareBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                        </svg>
+                        分享故事
+                    </button>
+                    <button class="btn-back" id="restartBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        </svg>
+                        返回首页
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- API 设置弹窗 -->
+        <div class="modal" id="settingsModal">
+            <div class="modal-overlay"></div>
+            <div class="modal-content">
+                <button class="modal-close" id="closeModal">&times;</button>
+                <h3>API 设置</h3>
+                <p class="modal-desc">配置你的 AI API 密钥（数据仅保存在本地）</p>
+                
+                <div class="form-group">
+                    <label for="apiProvider">API 服务商</label>
+                    <select id="apiProvider">
+                        <option value="openai">OpenAI</option>
+                        <option value="deepseek">DeepSeek</option>
+                        <option value="custom">自定义 (OpenAI 兼容)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="customEndpointGroup" style="display:none;">
+                    <label for="apiEndpoint">API 端点</label>
+                    <input type="text" id="apiEndpoint" placeholder="https://api.example.com/v1/chat/completions">
+                </div>
+                
+                <div class="form-group">
+                    <label for="apiKey">API Key</label>
+                    <input type="password" id="apiKey" placeholder="sk-...">
+                </div>
+
+                <div class="form-group">
+                    <label for="modelName">模型名称</label>
+                    <input type="text" id="modelName" placeholder="gpt-4o-mini">
+                </div>
+                
+                <button class="btn-primary" id="saveSettings">保存设置</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
