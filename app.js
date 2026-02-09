@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initStars();
     initNavigation();
     initForm();
-    initModal();
 });
 
 // ===== 星空背景 =====
@@ -46,6 +45,10 @@ function showPage(pageId) {
         page.classList.remove('active');
     });
     document.getElementById(pageId).classList.add('active');
+    // Ensure we start at the top of the new page, using rAF for layout stability
+    requestAnimationFrame(() => {
+        window.scrollTo({ top: 0, behavior: 'auto' });
+    });
 }
 
 // ===== 表单处理 =====
@@ -88,6 +91,9 @@ function initForm() {
 
 function goToStep(step) {
     currentStep = step;
+
+    // 切换步骤时滚动到顶部，优化手机端体验
+    window.scrollTo(0, 0);
 
     // 更新步骤显示
     document.querySelectorAll('.form-step').forEach(s => {
@@ -191,7 +197,12 @@ async function submitForm() {
 
     try {
         // 调用流式 API
-        const response = await fetch('/api/generate/stream', {
+        // Detect if we are running under /if_i/ path
+        const apiPath = window.location.pathname.includes('/if_i')
+            ? '/if_i/api/generate/stream'
+            : '/api/generate/stream';
+
+        const response = await fetch(apiPath, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -259,59 +270,158 @@ function formatStory(text) {
     return paragraphs.map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
 }
 
-// ===== 设置弹窗 =====
-function initModal() {
-    const settingsBtn = document.getElementById('settingsBtn');
-    const closeModal = document.getElementById('closeModal');
-    const modal = document.getElementById('settingsModal');
-    const modalOverlay = modal.querySelector('.modal-overlay');
-    const apiProvider = document.getElementById('apiProvider');
-    const customEndpointGroup = document.getElementById('customEndpointGroup');
-    const saveSettings = document.getElementById('saveSettings');
+// 分享相关逻辑
+const shareBtn = document.getElementById('shareBtn');
+const shareModal = document.getElementById('shareModal');
+const closeShareModal = document.getElementById('closeShareModal');
+const shareImage = document.getElementById('shareImage');
+const modalDownloadBtn = document.getElementById('modalDownloadBtn');
+const modalShareBtn = document.getElementById('modalShareBtn');
 
-    // 由于改为后端调用，设置弹窗主要用于展示信息
-    settingsBtn.addEventListener('click', () => {
-        modal.classList.add('active');
-    });
+// 统一保存图片的当前 blob，用于下载按钮
+let currentShareBlob = null;
 
-    closeModal.addEventListener('click', () => {
-        modal.classList.remove('active');
-    });
+shareBtn.addEventListener('click', async () => {
+    // 保存原始按钮状态
+    const originalContent = shareBtn.innerHTML;
+    shareBtn.innerHTML = '<span class="btn-icon">⏳</span> 生成图片中...';
+    shareBtn.disabled = true;
 
-    modalOverlay.addEventListener('click', () => {
-        modal.classList.remove('active');
-    });
+    try {
+        // 获取要截图的区域 (结果页内容)
+        const element = document.querySelector('#resultPage .content-wrapper');
+        const actions = element.querySelector('.result-actions');
 
-    apiProvider.addEventListener('change', () => {
-        customEndpointGroup.style.display =
-            apiProvider.value === 'custom' ? 'block' : 'none';
-    });
+        // 临时隐藏按钮
+        if (actions) actions.style.display = 'none';
 
-    saveSettings.addEventListener('click', () => {
-        showToast('API 设置已由服务端管理');
-        modal.classList.remove('active');
-    });
+        // 使用 html2canvas 生成图片
+        const canvas = await html2canvas(element, {
+            backgroundColor: '#0a0a0f', // 强制深色背景
+            scale: 2, // 高清截图
+            useCORS: true,
+            logging: false,
+            onclone: (clonedDoc) => {
+                // 确保克隆文档中的按钮也是隐藏的
+                const clonedActions = clonedDoc.querySelector('.result-actions');
+                if (clonedActions) clonedActions.style.display = 'none';
 
-    // 分享按钮
-    const shareBtn = document.getElementById('shareBtn');
-    shareBtn.addEventListener('click', () => {
-        const storyContent = document.getElementById('storyContent').innerText;
-        const nickname = document.getElementById('resultName').textContent;
+                // 强制展开故事容器，以便捕获完整内容
+                const clonedStory = clonedDoc.querySelector('.story-container');
+                if (clonedStory) {
+                    clonedStory.style.maxHeight = 'none';
+                    clonedStory.style.overflow = 'visible';
+                }
+            }
+        });
 
-        const shareText = `【${nickname}的IF线人生】\n\n${storyContent.slice(0, 200)}...\n\n🌌 来自「人生IF线生成器」`;
+        // 恢复按钮显示
+        if (actions) actions.style.display = '';
 
-        if (navigator.share) {
-            navigator.share({
-                title: '我的IF线人生',
-                text: shareText,
-            });
-        } else {
-            // 复制到剪贴板
-            navigator.clipboard.writeText(shareText).then(() => {
-                showToast('已复制到剪贴板');
-            });
+        // 将 canvas 转换为 Blob
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+
+        if (!blob) {
+            throw new Error('图片生成失败');
         }
-    });
+
+        currentShareBlob = blob;
+        const imageUrl = URL.createObjectURL(blob);
+        shareImage.src = imageUrl;
+
+        const file = new File([blob], 'if_life.png', { type: 'image/png' });
+
+        // 打开弹窗
+        openModal('shareModal');
+
+        // 检查是否支持原生分享
+        // 注意：navigator.canShare 在某些浏览器中可能不存在
+        let canShare = false;
+        try {
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                canShare = true;
+            }
+        } catch (e) {
+            console.warn('Check canShare failed:', e);
+        }
+
+        if (canShare) {
+            modalShareBtn.style.display = 'inline-flex';
+            // 此时“保存图片”作为备选，样式上可以弱化，或者保持原样
+        } else {
+            modalShareBtn.style.display = 'none';
+        }
+
+        // PC端：尝试自动复制到剪贴板，作为额外便利
+        if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            try {
+                const item = new ClipboardItem({ [blob.type]: blob });
+                await navigator.clipboard.write([item]);
+                showToast('图片已复制到剪贴板');
+            } catch (err) {
+                // 忽略复制失败
+            }
+        }
+
+        // 恢复按钮状态
+        shareBtn.innerHTML = originalContent;
+        shareBtn.disabled = false;
+
+    } catch (error) {
+        console.error('生成分享图片失败:', error);
+        showToast('生成图片失败，请重试');
+        shareBtn.innerHTML = originalContent;
+        shareBtn.disabled = false;
+    }
+});
+
+// 绑定新分享按钮事件
+modalShareBtn.addEventListener('click', async () => {
+    if (!currentShareBlob) return;
+
+    const file = new File([currentShareBlob], 'if_life.png', { type: 'image/png' });
+    try {
+        await navigator.share({
+            files: [file],
+            title: '我的IF线人生',
+            text: '来看看我在另一个宇宙的故事！'
+        });
+    } catch (err) {
+        if (err.name !== 'AbortError') {
+            console.error('Share failed:', err);
+            showToast('分享失败，请尝试保存图片');
+        }
+    }
+});
+
+// 弹窗控制
+function openModal(modalId) {
+    document.getElementById(modalId).classList.add('active');
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('active');
+}
+
+closeShareModal.addEventListener('click', () => closeModal('shareModal'));
+document.querySelector('#shareModal .modal-overlay').addEventListener('click', () => closeModal('shareModal'));
+
+modalDownloadBtn.addEventListener('click', () => {
+    if (currentShareBlob) {
+        downloadImage(currentShareBlob);
+    }
+});
+
+// 辅助函数：下载图片
+function downloadImage(blob) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `if_life_${new Date().getTime()}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
 
 // ===== Toast 提示 =====
