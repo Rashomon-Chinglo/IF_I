@@ -1,0 +1,40 @@
+<!-- 信息收集页 -->
+<section class="page form-page" id="formPage">
+    <div class="content-wrapper">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+            <div class="step-indicators">
+                <span class="step-dot active" data-step="1">1</span>
+                <span class="step-dot" data-step="2">2</span>
+                <span class="step-dot" data-step="3">3</span>
+                <span class="step-dot" data-step="4">4</span>
+            </div>
+        </div>
+
+        <form id="lifeForm">
+            {% include "flow/form_steps/step_1_basic.html" %}
+            {% include "flow/form_steps/step_2_relationship.html" %}
+            {% include "flow/form_steps/step_3_career.html" %}
+            {% include "flow/form_steps/step_4_lifestyle.html" %}
+
+            <div class="form-nav">
+                <button type="button" class="btn-back" id="prevBtn" disabled>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                    </svg>
+                    上一步
+                </button>
+                <button type="button" class="btn-primary" id="nextBtn">
+                    下一步
+                    <svg class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                </button>
+                <button type="submit" class="btn-primary btn-generate" id="generateBtn" style="display:none;">
+                    <span class="btn-text">生成 IF 线</span>
+                    <span class="btn-icon">✨</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</section>

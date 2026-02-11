@@ -47,6 +47,8 @@ OPENAI_API_KEY="your-api-key-1"
 OPENAI_BASE_URL=http://localhost:8317/v1
 ```
 
+`OPENAI_API_KEY` 不能使用示例占位值（如 `your-api-key-here`），否则生成接口会被上游拦截。
+
 **注意**：需要先启动 8317 端口的 API 代理服务（cli2api）
 
 ---
@@ -143,6 +145,52 @@ journalctl -u if_i -f
 - **包管理**: uv
 - **AI 模型**: gemini-3-flash-preview (via cli2api)
 - **反向代理**: Nginx
+
+---
+
+## 代码结构（重构后）
+
+```text
+.
+├── app.js                  # 前端入口加载器（保持原引用路径）
+├── templates/
+│   ├── index.html          # 页面容器模板（通过 include 组装）
+│   └── flow/               # 同一业务流程模板组件目录
+│       ├── welcome.html    # 欢迎页组件模板
+│       ├── form.html       # 表单页骨架模板
+│       ├── loading.html    # 生成中页组件模板
+│       ├── result.html     # 结果页组件模板
+│       ├── share_modal.html# 分享弹窗组件模板
+│       └── form_steps/     # 表单步骤子组件
+│           ├── step_1_basic.html
+│           ├── step_2_relationship.html
+│           ├── step_3_career.html
+│           └── step_4_lifestyle.html
+├── frontend/
+│   ├── bootstrap.js        # 前端初始化编排
+│   ├── constants.js        # 常量配置
+│   ├── state.js            # 全局运行状态
+│   ├── utils/dom.js        # DOM 与页面切换工具
+│   ├── ui/toast.js         # 提示组件逻辑
+│   └── features/
+│       ├── stars.js        # 星空背景逻辑
+│       ├── navigation.js   # 欢迎页/返回首页导航
+│       ├── form.js         # 多步骤表单与提交流程
+│       ├── story.js        # 流式响应解析与文本渲染
+│       └── share.js        # 图片生成与分享逻辑
+├── server.py               # 后端入口（仅创建 app）
+└── backend/
+    ├── app_factory.py      # FastAPI 组装与路由注册
+    ├── config.py           # 环境变量与运行配置
+    ├── models.py           # Pydantic 数据模型
+    ├── life_analysis.py    # 人生类型分析与打分
+    ├── prompt_builder.py   # Prompt 构建
+    └── story_service.py    # OpenAI 调用与 SSE 事件生成
+```
+
+说明：
+- 用户端 UI 与交互流程保持不变。
+- API 保持不变：`/api/generate`、`/api/generate/stream`。
 
 ---
 

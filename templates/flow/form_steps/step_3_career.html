@@ -1,0 +1,62 @@
+<!-- Step 3: 职业生活 -->
+<div class="form-step" data-step="3">
+    <h2 class="step-title">职业生活</h2>
+    <p class="step-desc">工作与生活的日常</p>
+
+    <div class="form-group">
+        <label for="occupation">职业/身份</label>
+        <input type="text" id="occupation" name="occupation" placeholder="你是做什么的？" required>
+    </div>
+
+    <div class="form-group">
+        <label>工作稳定性</label>
+        <div class="select-cards">
+            <label class="select-card">
+                <input type="radio" name="jobStability" value="stable" required>
+                <div class="card-content">
+                    <span class="card-emoji">🏛️</span>
+                    <span class="card-text">铁饭碗/大厂</span>
+                </div>
+            </label>
+            <label class="select-card">
+                <input type="radio" name="jobStability" value="moderate">
+                <div class="card-content">
+                    <span class="card-emoji">🏢</span>
+                    <span class="card-text">普通稳定</span>
+                </div>
+            </label>
+            <label class="select-card">
+                <input type="radio" name="jobStability" value="freelance">
+                <div class="card-content">
+                    <span class="card-emoji">🎨</span>
+                    <span class="card-text">自由职业</span>
+                </div>
+            </label>
+            <label class="select-card">
+                <input type="radio" name="jobStability" value="unstable">
+                <div class="card-content">
+                    <span class="card-emoji">🎢</span>
+                    <span class="card-text">动荡不定</span>
+                </div>
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>住房情况</label>
+        <div class="radio-group">
+            <label class="radio-option">
+                <input type="radio" name="housing" value="owned" required>
+                <span class="radio-label">有房</span>
+            </label>
+            <label class="radio-option">
+                <input type="radio" name="housing" value="renting">
+                <span class="radio-label">租房</span>
+            </label>
+            <label class="radio-option">
+                <input type="radio" name="housing" value="living_with_parents">
+                <span class="radio-label">和父母住</span>
+            </label>
+        </div>
+    </div>
+</div>

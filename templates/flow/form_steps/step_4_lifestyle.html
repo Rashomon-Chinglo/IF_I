@@ -1,0 +1,42 @@
+<!-- Step 4: 生活状态 -->
+<div class="form-step" data-step="4">
+    <h2 class="step-title">生活状态</h2>
+    <p class="step-desc">最后再了解一点你的日常</p>
+
+    <div class="form-group">
+        <label>生活节奏</label>
+        <div class="select-cards">
+            <label class="select-card">
+                <input type="radio" name="lifestyle" value="regular" required>
+                <div class="card-content">
+                    <span class="card-emoji">🌅</span>
+                    <span class="card-text">规律养生</span>
+                </div>
+            </label>
+            <label class="select-card">
+                <input type="radio" name="lifestyle" value="balanced">
+                <div class="card-content">
+                    <span class="card-emoji">⚖️</span>
+                    <span class="card-text">比较平衡</span>
+                </div>
+            </label>
+            <label class="select-card">
+                <input type="radio" name="lifestyle" value="chaotic">
+                <div class="card-content">
+                    <span class="card-emoji">🌙</span>
+                    <span class="card-text">熬夜随性</span>
+                </div>
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="lifeDesc">用一句话描述你当前的生活</label>
+        <textarea id="lifeDesc" name="lifeDesc" rows="3" placeholder="例如：每天朝九晚五，周末宅家打游戏..." required></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="dream">你曾经有过但没实现的梦想是？</label>
+        <textarea id="dream" name="dream" rows="2" placeholder="例如：想当个摇滚歌手、环游世界..."></textarea>
+    </div>
+</div>

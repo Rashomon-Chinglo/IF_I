@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人生IF线生成器 | 另一条世界线的你</title>
+    <meta name="description" content="探索平行宇宙中的另一个你，生成属于你的IF线人生故事">
+    <link rel="stylesheet" href="styles.css?v=1.1.3">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- 星空背景 -->
+        <div class="stars-bg" id="stars"></div>
+
+        {% include "flow/welcome.html" %}
+        {% include "flow/form.html" %}
+        {% include "flow/loading.html" %}
+        {% include "flow/result.html" %}
+        {% include "flow/share_modal.html" %}
+    </div>
+
+    <script src="html2canvas.min.js"></script>
+    <script src="app.js?v=1.1.4"></script>
+</body>
+
+</html>
